@@ -1,10 +1,9 @@
 "use strict";
-const webAPI = "https://opentdb.com/api.php?amount=10";
+  const webAPI = "https://opentdb.com/api.php?amount=10";
 
 class Quiz {
   constructor(resJson) {
     this.resJson = resJson.results;
-    console.log(this.resJson);
   }
 
   category(index) {
@@ -32,8 +31,8 @@ const div = document.getElementById("div");
 const button = document.getElementById("start-button");
 const title = document.getElementById("title");
 const click = document.getElementById("click");
-const questioncategory = document.getElementById("question");
-const questiondifficulty = document.getElementById("question_2");
+const questioncategory = document.getElementById("category");
+const questiondifficulty = document.getElementById("difficulty");
 const start_button = document.getElementById("start-button");
 const answer = document.getElementById("answer");
 
@@ -45,16 +44,17 @@ button.addEventListener("click", () => {
 });
 
 async function resJson(index) {
-  title.textContent = "取得中";
-  click.textContent = "少々お待ちください";
-
-  const response = await fetch(webAPI);
-  const resJson = await response.json();
-  console.log(resJson);
-  const quizconstructor = new Quiz(resJson);
-  quizefunction(quizconstructor, index);
+  try {
+     title.textContent = "取得中";
+     click.textContent = "少々お待ちください";
+    const response = await fetch(webAPI);
+    const resJson = await response.json();
+    const quizconstructor = new Quiz(resJson);
+    quizefunction(quizconstructor, index);
+  } catch (error) {
+    console.error('error');
+  }
 }
-
 const quizefunction = (quizconstructor, index) => {
   title.innerHTML = `問題${index}`;
   questioncategory.innerHTML = `[ジャンル]${quizconstructor.category(index)}`;
@@ -64,7 +64,7 @@ const quizefunction = (quizconstructor, index) => {
   const incorrect_answers = quizconstructor.incorrect_answers(index);
   const correct_answer = quizconstructor.correct_answer(index);
   incorrect_answers.push(quizconstructor.correct_answer(index));
-  console.log(incorrect_answers);
+  
 
   const shuffle = ([...array]) => {
     for (let i = array.length - 1; i >= 0; i--) {
@@ -95,14 +95,14 @@ const quizefunction = (quizconstructor, index) => {
         answer.removeChild(answer.firstElementChild);
       }
       num++;
-      console.log(num);
+      
       if (num < 10) {
         quizefunction(quizconstructor, index);
       } else {
         title.textContent = `あなたの回答${num_1}です！！`;
         click.textContent = "再チャレンジしたい場合は下をクリック！！";
-        question.remove();
-        question_2.remove();
+        questioncategory .remove();
+        questiondifficulty.remove();
         const but = document.createElement("button");
         but.innerHTML = "ホームに戻る";
         answer.appendChild(but);
